@@ -26,6 +26,8 @@ public:
     void turnLeft();
     void turnRight();
     bool isWallInFront();
+    bool isWallRight();
+    bool isWallLeft();
 };
 
 #endif

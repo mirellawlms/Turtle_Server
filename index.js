@@ -87,7 +87,7 @@ echo $path
   const path = stringpath?JSON.parse(stringpath.replace(",]", "]")):[];
 
   // Delete the folder
-  //execSync(`rm -rf ${folder}`);
+  execSync(`rm -rf ${folder}`);
 
   //string wird zurück an die website geschickt
   res.send({compile:compile,output:output,path:path});

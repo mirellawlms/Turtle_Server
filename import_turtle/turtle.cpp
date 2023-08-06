@@ -58,6 +58,7 @@ Kroete::~Kroete(){
 }
 
 /*Funktionen*/
+//Ist Wand vor mir
 bool Kroete::isWallInFront(){
     switch (direction){
         //north
@@ -75,6 +76,56 @@ bool Kroete::isWallInFront(){
         //west
         case 3:
         return (position_x - 1) < 0 || spielfeld[position_y][position_x-1] == WALL;
+        break;
+
+        default:
+            return false;
+    }
+}
+
+//Ist Wand rechts von mir
+bool Kroete::isWallRight(){
+    switch (direction){
+        //schaue nach norden, wand osten
+        case 0:
+        return (position_x + 1) >= FIELDSIZE || spielfeld[position_y][position_x+1] == WALL;
+        break;
+        //schaue nach osten, wand süden
+        case 1:
+        return  (position_y + 1) >= FIELDSIZE|| spielfeld[position_y + 1][position_x] == WALL;
+        break;
+        //schaue nach süden, wand westen
+        case 2:
+        return  (position_x - 1) < 0 || spielfeld[position_y][position_x-1] == WALL;
+        break;
+        //schaue nach westen, wand norden
+        case 3:
+        return (position_y - 1) < 0 || spielfeld[position_y - 1][position_x] == WALL;
+        break;
+
+        default:
+            return false;
+    }
+}
+
+    //Ist Wand links von mir
+bool Kroete::isWallLeft(){
+    switch (direction){
+        //schaue nach norden, wand westen
+        case 0:
+        return (position_x - 1) >= FIELDSIZE || spielfeld[position_y][position_x-1] == WALL;
+        break;
+        //schaue nach osten, wand norden
+        case 1:
+        return  (position_y - 1) >= FIELDSIZE|| spielfeld[position_y - 1][position_x] == WALL;
+        break;
+        //schaue nach süden, wand osten
+        case 2:
+        return  (position_x + 1) < 0 || spielfeld[position_y][position_x+1] == WALL;
+        break;
+        //schaue nach westen, wand norden
+        case 3:
+        return (position_y + 1) < 0 || spielfeld[position_y + 1][position_x] == WALL;
         break;
 
         default:
