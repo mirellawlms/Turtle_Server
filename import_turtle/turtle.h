@@ -28,6 +28,7 @@ public:
     bool isWallInFront();
     bool isWallRight();
     bool isWallLeft();
+    bool imZiel();
 };
 
 #endif
