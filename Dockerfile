@@ -1,11 +1,10 @@
-# Choose a base image that supports C++
-FROM gcc:latest
+FROM node:18
 
-# Copy the C++ executable to the container
-COPY Program ${folder}/Program 
+WORKDIR /usr/src/pebble_code_server
+COPY package*.json ./
+RUN npm install
 
-# Set the working directory
-WORKDIR /app
+COPY . .
 
-# Set the entry point to run the executable
-ENTRYPOINT ["./Program"]
+EXPOSE 8080
+CMD [ "node", "index.js" ]

@@ -1,9 +1,13 @@
 #ifndef MIRISTURTLE_H
 #define MIRISTURTLE_H
-#include <fstream>
-#include <vector>
 
-enum Field {
+#include <vector>
+#include "json.hpp"
+
+using json = nlohmann::json;
+
+enum Field
+{
     EMPTY,
     WALL,
     EXIT,
@@ -11,14 +15,17 @@ enum Field {
 };
 
 /*Schildkroete Klasse*/
-class Kroete{
+class Kroete
+{
 private:
     int position_x = 0;
     int position_y = 0;
     int direction = 2;
-    std::ofstream path;
-    //vector listen besser als arr, da ich spielfeldgröße davor nicht festlegen will
+    int FIELDSIZE = 0;
+    json path;
+    // vector listen besser als arr, da ich spielfeldgröße davor nicht festlegen will
     std::vector<std::vector<int>> spielfeld;
+
 public:
     Kroete();
     ~Kroete();

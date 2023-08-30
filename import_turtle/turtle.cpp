@@ -3,8 +3,8 @@
 #include <string>
 #include <sstream>
 #include <cstdlib>
+#include <fstream>
 
-const int FIELDSIZE = 10;
 /*spielfeld = {
     {3, 1, 1, 1, 0, 0, 0, 0, 0, 0},
     {0, 1, 0, 1, 0, 1, 0, 0, 0, 0},
@@ -19,49 +19,36 @@ const int FIELDSIZE = 10;
 };*/
 Kroete::Kroete()
 {
-    // labyrinthdatei so aufbrechen, dass ich einzelene zahlen für jede reihe übergebe (matrix)
-    std::ifstream labyrinthdatei("labyrinth.txt");
-    std::string line;
-    if (labyrinthdatei.is_open())
+    // Lade Spielfeld
+    std::ifstream labyrinthdatei("labyrinth.json");
+
+    if (!labyrinthdatei)
     {
-        // lese datei zeile für zeile
-        // 3,1,1,1,0,0,0,0,0,0;0,1,0,1,0,1,0,0,0,0;
-        while (getline(labyrinthdatei, line))
+        std::cerr << "Datei wurde nicht gefunden!";
+        return;
+    }
+
+    json data = json::parse(labyrinthdatei);
+    FIELDSIZE = data.size();
+
+    // Labyrinth in Spielfeld laden
+    for (int i = 0; i < FIELDSIZE; i++)
+    {
+        std::vector<int> row;
+        for (int j = 0; j < FIELDSIZE; j++)
         {
-            std::stringstream ss(line);
-            std::string row;
-            // ss wir bei ; gespilted
-            //'3,1,1,1,0,0,0,0,0,0', '0,1,0,1,0,1,0,0,0,0'
-            while (std::getline(ss, row, ';'))
-            {
-                std::vector<int> rowvalue;
-                std::stringstream rowstream(row);
-                std::string value;
-                // row wird bei , gesplitted
-                //[['3', '1', '1', '1', '0', '0', '0', '0', '0', '0'],['0', '1', '0', '1', '0', '1', '0', '0', '0', '0'],
-                while (std::getline(rowstream, value, ','))
-                {
-                    // aus string wird ein int
-                    rowvalue.push_back(std::stoi(value));
-                }
-                // zahlen kommen in das spielfeld
-                spielfeld.push_back(rowvalue);
-            }
+            row.push_back(data[i][j]);
         }
-        labyrinthdatei.close();
+        spielfeld.push_back(row);
     }
-    path = std::ofstream("kroeten_path.json");
-    if (!path)
-    {
-        std::cerr << "Datei wurde nicht erstellt!";
-    }
-    path << "[";
+
+    path = json::array();
 }
 
 Kroete::~Kroete()
 {
-    path << "]";
-    path.close();
+    std::ofstream pathfile("kroeten_path.json");
+    pathfile << path;
 }
 
 /*Funktionen*/
@@ -156,26 +143,25 @@ void Kroete::moveForward()
 {
     if (!isWallInFront())
     {
-        /* \"start"\ : wird in json nur "start": sein*/
         switch (direction)
         {
         case 0:
-            path << "{\"start_x\":" << position_x << ", \"start_y\":" << position_y << ", \"end_x\":" << position_x << ", \"end_y\":" << position_y - 1 << ", \"direction\":" << direction << "},";
+            path.push_back({{"start_x", position_x}, {"start_y", position_y}, {"end_x", position_x}, {"end_y", position_y - 1}, {"direction", direction}});
             position_y -= 1;
             break;
 
         case 1:
-            path << "{\"start_x\":" << position_x << ", \"start_y\":" << position_y << ", \"end_x\":" << position_x + 1 << ", \"end_y\":" << position_y << ", \"direction\":" << direction << "},";
+            path.push_back({{"start_x", position_x}, {"start_y", position_y}, {"end_x", position_x + 1}, {"end_y", position_y}, {"direction", direction}});
             position_x += 1;
             break;
 
         case 2:
-            path << "{\"start_x\":" << position_x << ", \"start_y\":" << position_y << ", \"end_x\":" << position_x << ", \"end_y\":" << position_y + 1 << ", \"direction\":" << direction << "},";
+            path.push_back({{"start_x", position_x}, {"start_y", position_y}, {"end_x", position_x}, {"end_y", position_y + 1}, {"direction", direction}});
             position_y += 1;
             break;
 
         case 3:
-            path << "{\"start_x\":" << position_x << ", \"start_y\":" << position_y << ", \"end_x\":" << position_x - 1 << ", \"end_y\":" << position_y << ", \"direction\":" << direction << "},";
+            path.push_back({{"start_x", position_x}, {"start_y", position_y}, {"end_x", position_x - 1}, {"end_y", position_y}, {"direction", direction}});
             position_x -= 1;
             break;
         }
@@ -184,8 +170,9 @@ void Kroete::moveForward()
     {
         std::cout << "Du kannst hier nicht hinkröten, weil hier eine Wand ist! " << std::endl;
         std::cout << "Probiere es nochmal!" << std::endl;
-        path << "]";
-        path.close();
+
+        std::ofstream pathfile("kroeten_path.json");
+        pathfile << path;
         exit(0);
     }
 }
@@ -201,11 +188,12 @@ void Kroete::turnLeft()
     {
         direction = newDirection;
     }
-    path << "{\"start_x\":" << position_x << ", \"start_y\":" << position_y << ", \"end_x\":" << position_x << ", \"end_y\":" << position_y << ", \"direction\":" << direction << "},";
+
+    path.push_back({{"start_x", position_x}, {"start_y", position_y}, {"end_x", position_x}, {"end_y", position_y}, {"direction", direction}});
 }
 
 void Kroete::turnRight()
 {
     direction = abs(direction + 1) % 4;
-    path << "{\"start_x\":" << position_x << ", \"start_y\":" << position_y << ", \"end_x\":" << position_x << ", \"end_y\":" << position_y << ", \"direction\":" << direction << "},";
+    path.push_back({{"start_x", position_x}, {"start_y", position_y}, {"end_x", position_x}, {"end_y", position_y}, {"direction", direction}});
 }
