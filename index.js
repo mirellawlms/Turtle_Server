@@ -25,10 +25,10 @@ app.post("/run", function (req, res) {
 
   //hole code aus website und schreibe es in code
   const code = req.body.code;
-  //schreibt code aus website in die datei main.cpp imn random ordner
+  //schreibt code aus website in die datei main.cpp imn ZO
   fs.writeFileSync(`${folder}/main.cpp`, code);
 
-  //gleich für labyrinth code
+  //schreibt labyrinth aus website in die datei labyrinth.json imn ZO
   const labyrinth = req.body.labyrinth;
   fs.writeFileSync(`${folder}/labyrinth.json`, JSON.stringify(labyrinth));
 
@@ -74,9 +74,9 @@ echo $path
   let programm_output = "";
 
   try {
-    // kompiliere den code im docker
+    // Kompiliere den Code im Docker
     execSync(`cd ${folder} && docker build -t ${folder} .`);
-    // Run the code
+    // Führe den Code aus
     programm_output = execSync(
       `cd ${folder} && docker run ${folder}`
     ).toString();
