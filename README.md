@@ -10,7 +10,13 @@ npm install cors
 ```
 npm install
 ```
-#### Usage:
+
+#### Benutzung:
 ```
 node index.js
 ```
+
+#### Docker Installation:
+Linux: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04
+
+Windows: https://www.docker.com/
