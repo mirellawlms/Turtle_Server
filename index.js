@@ -8,7 +8,6 @@ const bodyParser = require("body-parser");
 const { execSync } = require("child_process");
 //filesystem datei ordner etc erstellen
 const fs = require("fs");
-
 //Express server init
 const app = express();
 //cors ermöglich mir domain übergreifend zu arbeiten
@@ -25,10 +24,10 @@ app.post("/run", function (req, res) {
 
   //hole code aus website und schreibe es in code
   const code = req.body.code;
-  //schreibt code aus website in die datei main.cpp imn ZO
+  //schreibt code aus website in die datei main.cpp im ZO
   fs.writeFileSync(`${folder}/main.cpp`, code);
 
-  //schreibt labyrinth aus website in die datei labyrinth.json imn ZO
+  //schreibt labyrinth aus website in die datei labyrinth.json im ZO
   const labyrinth = req.body.labyrinth;
   fs.writeFileSync(`${folder}/labyrinth.json`, JSON.stringify(labyrinth));
 
@@ -84,8 +83,8 @@ echo $path
     console.log(err);
   }
 
-  //split bei programm:output jeweils bei dem zeichen in die Konstante
-  //x=>x.trim() zeilenumbrüche raus
+  // split bei programm_output jeweils bei dem zeichen in die Konstanten
+  // x=>x.trim() zeilenumbrüche raus
   const [compile, output, stringpath] = programm_output
     .split("--------")
     .map((x) => x.trim());
@@ -94,7 +93,7 @@ echo $path
   // Delete the folder
   execSync(`rm -rf ${folder}`);
 
-  //string wird zurück an die website geschickt
+  // wird zurück an die website geschickt
   res.send({ compile: compile, output: output, path: path });
 });
 
