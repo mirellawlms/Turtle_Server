@@ -23,7 +23,7 @@ private:
     int direction = 2;
     int FIELDSIZE = 0;
     json path;
-    // vector listen besser als arr, da ich spielfeldgröße davor nicht festlegen will
+    // vector listen besser als arr, da ich Spielfeldgröße davor nicht festlegen will
     std::vector<std::vector<int>> spielfeld;
 
 public:

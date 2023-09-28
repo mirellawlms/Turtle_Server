@@ -17,6 +17,7 @@
     {0, 0, 0, 1, 0, 1, 1, 1, 0, 1},
     {0, 1, 0, 1, 0, 0, 0, 0, 0, 2}
 };*/
+
 Kroete::Kroete()
 {
     // Lade Spielfeld
@@ -27,26 +28,30 @@ Kroete::Kroete()
         std::cerr << "Datei wurde nicht gefunden!";
         return;
     }
-
+    // .json in in json Objekt laden
     json data = json::parse(labyrinthdatei);
     FIELDSIZE = data.size();
 
-    // Labyrinth in Spielfeld laden
-    for (int i = 0; i < FIELDSIZE; i++)
-    {
+    // Labyrinth in das Vektorobjekt "spielfeld"  laden
+    // durchläuft jede Zeile des Labyrinths
+    for (int i = 0; i < FIELDSIZE; i++){
+    //leere Vektorreihe "row" erstellen
         std::vector<int> row;
+    //durchläuft jede Spalte des Labyrinths    
         for (int j = 0; j < FIELDSIZE; j++)
         {
+    //fügt den Wert aus "data[i][j]" dem Vektor "row" hinzu
             row.push_back(data[i][j]);
         }
+    //fügt die fertige "row" dem Vektor "spielfeld" hinzu
         spielfeld.push_back(row);
     }
-
     path = json::array();
+
 }
 
 Kroete::~Kroete()
-{
+{ // path in datei
     std::ofstream pathfile("kroeten_path.json");
     pathfile << path;
 }
@@ -55,6 +60,7 @@ Kroete::~Kroete()
 // Ist Wand vor mir
 bool Kroete::isWallInFront()
 {
+    // Prüft die Ausrichtung der Schildkröte
     switch (direction)
     {
     // north
@@ -139,6 +145,8 @@ bool Kroete::imZiel()
     return spielfeld[position_y][position_x] == EXIT;
 }
 
+/*Bewegungsfunktionen */
+// Bewege mich vorwärts
 void Kroete::moveForward()
 {
     if (!isWallInFront())
@@ -177,13 +185,18 @@ void Kroete::moveForward()
     }
 }
 
+// Drehe mich nach links
 void Kroete::turnLeft()
 {
+    //subtrahiere 1 um Ausrichtung 90 Grad nach links zu drehen
+    // vier mögliche Ausrichtungen -> Division modulo 4 , um im Bereich von 0 bis 3 zu bleiben
     int newDirection = (direction - 1) % 4;
+    // wenn norden 0 -> -1, dann auf 3 gesetzt
     if (newDirection == -1)
     {
         direction = 3;
     }
+    // sonst neue Ausrichtung
     else
     {
         direction = newDirection;
@@ -192,8 +205,11 @@ void Kroete::turnLeft()
     path.push_back({{"start_x", position_x}, {"start_y", position_y}, {"end_x", position_x}, {"end_y", position_y}, {"direction", direction}});
 }
 
+// Drehe mich nach rechts
 void Kroete::turnRight()
 {
+    //addiere 1 um Ausrichtung 90 Grad nach rechts zu drehen
+    // vier mögliche Ausrichtungen -> Division modulo 4 , um im Bereich von 0 bis 3 zu bleiben
     direction = abs(direction + 1) % 4;
     path.push_back({{"start_x", position_x}, {"start_y", position_y}, {"end_x", position_x}, {"end_y", position_y}, {"direction", direction}});
 }
